@@ -17,6 +17,21 @@ Sonraki ajan sohbet geçmişini görmez; bağlam bu dosya, `BRIEF.md` ve `PLAN.m
 
 ---
 
+## 2026-10-10 — Sunum hazırlığı: ad "Inkline", README, ekran görüntüleri
+
+- **Ajan / ortam:** Claude Code (bulut).
+- **Branch / PR:** `asama-2-kamera` → `main` (Aşama 2 kamerası da bu PR ile girer).
+- **Ne yapıldı:**
+  - Oyunun adı **Inkline**. Başlık ekranı "INKLINE" (küçük "PROJECT" etiketi ve CSS'i kaldırıldı), alt yazı "PROTOTYPE · IN DEVELOPMENT", sayfa başlığı "Inkline", paket adı `inkline`. Şehirdeki "6OCT RADIO" tabelası "INK RADIO" oldu.
+  - Ayar anahtarları `inkline.settings.v1` ve `inkline.tutorialDone`. Eski `sixoctober.*` değerleri ilk okumada yeni anahtara taşınıp siliniyor (yeni anahtarda değer varsa o kalır). Taşıma için 1 test eklendi (120 test).
+  - README İngilizce ve kısa: oyun linki, GIF, 5 görsel, özellikler, kontroller (menüdeki kontrol kartıyla aynı), teknoloji, nasıl yapıldığı, yerelde çalıştırma, Türkçe belgelere linkler. Eski Türkçe README'deki komut tablosu ve duman testi anlatımı kısaltıldı; komutlar `AGENTS.md`'de duruyor.
+  - `docs/screenshots/`: `01-title.jpg`, `02-swing.jpg`, `03-perch.jpg`, `04-fight.jpg`, `05-crime-stopped.jpg` (1280×720, 89–216 KB) ve `swing.gif` (800 px, 5,5 sn, 10 fps, 4,65 MB; salınma → duvara tırmanma). Hepsi başsız Chromium + SwiftShader ile çekildi, FPS sayacı yalnız çekim betiğinde kapatıldı. GIF ffmpeg + gifsicle (apt) ile üretildi.
+  - `tools/smoke/stage1b.mjs`: Aşama 2 kamerası fare boştayken açıyı profile geri çektiği için betiğin doğrudan yazdığı yaw/pitch E'ye basılmadan geri alınıyordu (çatıya fırlama ve sonraki adımlar başarısızdı). Betik artık nişan almayı `cameraRig.look()` ile, fare hareketi gibi yapıyor. Oyun kodu değişmedi.
+- **Duman testi:** Düzeltilmiş betikle iki tam koşu. Birinde dövüş 900 tur sınırında 1 düşman kalınca bitti ("crime was not stopped"; dövüş ilerliyordu, sadece yavaştı). Diğeri ~450 turda bitti ve **SMOKE TEST PASSED**. Dövüş süresi koşudan koşuya değişiyor; tur sınırı değiştirilmedi.
+- **GitHub About kutusu:** `gh api` ile denendi; bulut proxy'si depo ayarı yazmaya izin vermiyor (403). Emirhan elle girecek (metin PR açıklamasında).
+- **Bilinen sorunlar:** `05-crime-stopped.jpg`'de kamera zırhlı kamyonun arkasında kalmış, kahraman kısmen kapalı (dar alanda Aşama 2 kamerası; görsel kontrol). README'deki oyun linki (`sixoctober.vercel.app`) Emirhan'ın verdiği adres; bu ortamdan açılamıyor.
+- **Sıradaki adım:** About kutusunu doldurmak, Vercel alan adının Inkline'a göre değişip değişmeyeceğine karar vermek; Aşama 2 kamera geri bildirimi.
+
 ## 2026-10-07 — Aşama 2: referansa dayalı kamera
 
 - **Ajan / ortam:** Codex (yerel Windows). Referans görsel incelendi; oyun/tarayıcı testi yapılmadı.
