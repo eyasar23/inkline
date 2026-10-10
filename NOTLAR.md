@@ -20,7 +20,7 @@ Sonraki ajan sohbet geçmişini görmez; bağlam bu dosya, `BRIEF.md` ve `PLAN.m
 ## 2026-10-10 — Sunum hazırlığı: ad "Inkline", README, ekran görüntüleri
 
 - **Ajan / ortam:** Claude Code (bulut).
-- **Branch / PR:** `asama-2-kamera` → `main` (Aşama 2 kamerası da bu PR ile girer).
+- **Branch / PR:** `asama-2-kamera` → `main`, [PR #5](https://github.com/eyasar23/inkline/pull/5) (Aşama 2 kamerası da bu PR ile girer).
 - **Ne yapıldı:**
   - Oyunun adı **Inkline**. Başlık ekranı "INKLINE" (küçük "PROJECT" etiketi ve CSS'i kaldırıldı), alt yazı "PROTOTYPE · IN DEVELOPMENT", sayfa başlığı "Inkline", paket adı `inkline`. Şehirdeki "6OCT RADIO" tabelası "INK RADIO" oldu.
   - Ayar anahtarları `inkline.settings.v1` ve `inkline.tutorialDone`. Eski `sixoctober.*` değerleri ilk okumada yeni anahtara taşınıp siliniyor (yeni anahtarda değer varsa o kalır). Taşıma için 1 test eklendi (120 test).
