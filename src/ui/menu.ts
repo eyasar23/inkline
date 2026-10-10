@@ -107,11 +107,10 @@ export class Menu {
     const title = el('div', 'menu-panel menu-title-screen');
     const art = el('div', 'menu-title-art');
     art.innerHTML = starburstSvg();
-    const project = el('div', 'menu-title-project', t('menu.project'));
     const name = el('div', 'menu-title-name', t('menu.title'));
     name.dataset.text = t('menu.title');
     const tagline = el('div', 'menu-caption', t('menu.tagline'));
-    art.append(project, name, tagline);
+    art.append(name, tagline);
     const titleButtons = el('div', 'menu-buttons');
     titleButtons.append(
       this.button('menu.play', () => this.actions.play(), true),

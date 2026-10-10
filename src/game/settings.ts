@@ -21,8 +21,28 @@ export interface Settings {
   cinematics: boolean;
 }
 
-const STORAGE_KEY = 'sixoctober.settings.v1';
-const TUTORIAL_KEY = 'sixoctober.tutorialDone';
+const STORAGE_KEY = 'inkline.settings.v1';
+const TUTORIAL_KEY = 'inkline.tutorialDone';
+/** Keys used before the game was renamed; moved to the new keys once, then removed. */
+const LEGACY_KEYS: ReadonlyArray<readonly [legacy: string, current: string]> = [
+  ['sixoctober.settings.v1', STORAGE_KEY],
+  ['sixoctober.tutorialDone', TUTORIAL_KEY],
+];
+
+/** Moves values saved under the old game name to the new keys (a value already under a new key wins). */
+export function migrateLegacyStorage(): void {
+  try {
+    const storage = window.localStorage;
+    for (const [legacy, current] of LEGACY_KEYS) {
+      const value = storage.getItem(legacy);
+      if (value === null) continue;
+      if (storage.getItem(current) === null) storage.setItem(current, value);
+      storage.removeItem(legacy);
+    }
+  } catch {
+    // Storage blocked: nothing to move.
+  }
+}
 
 export function defaultSettings(tuning: Tuning): Settings {
   return {
@@ -42,6 +62,7 @@ export function defaultSettings(tuning: Tuning): Settings {
 /** Saved settings over the defaults; anything missing or broken falls back to the default. */
 export function loadSettings(tuning: Tuning): Settings {
   const settings = defaultSettings(tuning);
+  migrateLegacyStorage();
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return settings;
@@ -93,6 +114,7 @@ export function frameRateCap(rate: FrameRate): number {
 }
 
 export function tutorialDone(): boolean {
+  migrateLegacyStorage();
   try {
     return window.localStorage.getItem(TUTORIAL_KEY) === '1';
   } catch {

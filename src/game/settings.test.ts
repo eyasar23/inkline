@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { tuning } from '../config/tuning';
-import { applySettings, defaultSettings, loadSettings, saveSettings } from './settings';
+import { applySettings, defaultSettings, loadSettings, saveSettings, tutorialDone } from './settings';
 
-const STORAGE_KEY = 'sixoctober.settings.v1';
+const STORAGE_KEY = 'inkline.settings.v1';
 
 function mockStorage(saved?: unknown): Map<string, string> {
   const values = new Map<string, string>();
@@ -11,6 +11,7 @@ function mockStorage(saved?: unknown): Map<string, string> {
     localStorage: {
       getItem: (key: string) => values.get(key) ?? null,
       setItem: (key: string, value: string) => values.set(key, value),
+      removeItem: (key: string) => values.delete(key),
     },
   });
   return values;
@@ -59,5 +60,21 @@ describe('camera preset settings', () => {
     saveSettings(settings);
     expect(JSON.parse(values.get(STORAGE_KEY)!)).toMatchObject({ cameraPreset: 'manual' });
     expect(JSON.parse(values.get(STORAGE_KEY)!)).not.toHaveProperty('autoRecenter');
+  });
+});
+
+describe('storage keys after the rename', () => {
+  it('moves the old sixoctober keys to the inkline keys once and removes them', () => {
+    const values = mockStorage();
+    values.set('sixoctober.settings.v1', JSON.stringify({ cameraPreset: 'manual', invertY: true }));
+    values.set('sixoctober.tutorialDone', '1');
+    const settings = loadSettings(tuning);
+    expect(settings.cameraPreset).toBe('manual');
+    expect(settings.invertY).toBe(true);
+    expect(tutorialDone()).toBe(true);
+    expect(values.has('sixoctober.settings.v1')).toBe(false);
+    expect(values.has('sixoctober.tutorialDone')).toBe(false);
+    expect(JSON.parse(values.get(STORAGE_KEY)!)).toMatchObject({ cameraPreset: 'manual', invertY: true });
+    expect(values.get('inkline.tutorialDone')).toBe('1');
   });
 });

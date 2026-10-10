@@ -77,19 +77,6 @@
   filter: drop-shadow(8px 8px 0 var(--ink));
 }
 
-.menu-title-project {
-  display: inline-block;
-  padding: 4px 14px 3px;
-  font: var(--comic-font);
-  font-size: 22px;
-  letter-spacing: 0.28em;
-  color: var(--ink);
-  background: var(--cyan);
-  border: 3px solid var(--ink);
-  transform: rotate(-4deg) skewX(-10deg);
-  box-shadow: 5px 5px 0 var(--ink);
-}
-
 .menu-title-name {
   position: relative;
   margin-top: 6px;
