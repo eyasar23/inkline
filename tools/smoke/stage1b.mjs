@@ -36,6 +36,15 @@ page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
 
 await page.goto(`${base}/?test&quality=medium`, { waitUntil: 'networkidle' });
 await page.waitForFunction(() => window.__game?.simTime() > 0.2, null, { timeout: 120_000 });
+// The stage 2 camera eases back to its framing once the mouse rests, so aiming goes through
+// look() like a mouse move instead of writing the angles.
+await page.evaluate(() => {
+  window.__aim = (yaw, pitch) => {
+    const rig = window.__game.cameraRig;
+    const s = window.__game.tuning.camera.mouseSensitivity;
+    rig.look((rig.yaw - yaw) / s, (pitch - rig.pitch) / s);
+  };
+});
 
 const shot = (name) => page.screenshot({ path: `${outDir}${name}`, type: 'jpeg', quality: 80 });
 const simTime = () => page.evaluate(() => window.__game.simTime());
@@ -91,8 +100,7 @@ async function lookForLedge(yaws) {
   for (const pitch of [-0.3, -0.45, -0.15]) {
     for (const yaw of yaws) {
       await game(([y, p]) => {
-        window.__game.cameraRig.yaw = y;
-        window.__game.cameraRig.pitch = p;
+        window.__aim(y, p);
       }, [yaw, pitch]);
       await waitSim(0.07); // at least two rendered frames
       if (await game(() => document.querySelector('.hud-crosshair')?.dataset.target === 'ledge')) return true;
@@ -113,8 +121,7 @@ if (!perched) {
   await game(() => {
     const g = window.__game;
     g.sim.respawnAt(2, 0, 280, -Math.PI / 2);
-    g.cameraRig.yaw = -Math.PI / 2;
-    g.cameraRig.pitch = -0.4;
+    window.__aim(-Math.PI / 2, -0.4);
   });
   await waitSim(0.6);
   await page.keyboard.press('KeyE');
@@ -142,8 +149,7 @@ await game(() => {
   }
   const dx = 0.6 * n.x + 0.8 * ax;
   const dz = 0.6 * n.z + 0.8 * az;
-  g.cameraRig.yaw = Math.atan2(-dx, -dz); // the camera looks along (−sin yaw, −cos yaw)
-  g.cameraRig.pitch = 0.2;
+  window.__aim(Math.atan2(-dx, -dz), 0.2); // the camera looks along (−sin yaw, −cos yaw)
 });
 await page.keyboard.press('Space');
 await waitSim(0.3);
@@ -199,8 +205,7 @@ const start = await game(() => {
   const z = alongX ? road.center : s0;
   const yaw = Math.atan2(-(site.x - x), -(site.z - z));
   g.sim.respawnAt(x, 0, z, yaw);
-  g.cameraRig.yaw = yaw;
-  g.cameraRig.pitch = 0.25;
+  window.__aim(yaw, 0.25);
   return { x, z, d: Math.hypot(site.x - x, site.z - z) };
 });
 log('approach starts on the crime road at', start && [Math.round(start.x), Math.round(start.z)], start && `${Math.round(start.d)} m out`);
@@ -223,8 +228,7 @@ for (let i = 0; route.length > 0 && (await simTime()) < approachEnd; i++) {
     const dx = target.x - p.x;
     const dz = target.z - p.z;
     const bearing = Math.atan2(-dx, -dz); // the camera looks along (−sin yaw, −cos yaw)
-    g.cameraRig.yaw = bearing;
-    g.cameraRig.pitch = 0.25;
+    window.__aim(bearing, 0.25);
     const site = g.crime.site;
     return { d: Math.hypot(dx, dz), crime: Math.hypot(site.x - p.x, site.z - p.z), state: g.sim.state, bearing };
   }, route[waypoint]);
@@ -256,8 +260,7 @@ for (let i = 0; route.length > 0 && (await simTime()) < approachEnd; i++) {
   if (now === 'perch') {
     // Leap off toward the target (W would step off the ledge instead), then swing.
     await game((b) => {
-      window.__game.cameraRig.yaw = b;
-      window.__game.cameraRig.pitch = 0.2;
+      window.__aim(b, 0.2);
     }, s.bearing);
     await waitSim(0.1);
     await page.keyboard.press('Space');
@@ -314,8 +317,7 @@ for (let round = 0; round < 900; round++) {
       }
     }
     if (best) {
-      g.cameraRig.yaw = Math.atan2(h.x - best.position.x, h.z - best.position.z);
-      g.cameraRig.pitch = 0.2;
+      window.__aim(Math.atan2(h.x - best.position.x, h.z - best.position.z), 0.2);
     }
     const warn = g.combat.enemies.some((e) => e.counterable && Math.hypot(e.position.x - h.x, e.position.z - h.z) < 4.2);
     const onEnemy = document.querySelector('.hud-crosshair')?.dataset.target === 'enemy';
