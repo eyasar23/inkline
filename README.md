@@ -1,70 +1,70 @@
-# sixoctober
+# Inkline
 
-Tarayıcıda çalışan, üçüncü şahıs kameralı, açık şehirde hareket ve dövüş odaklı bir aksiyon oyunu prototipi.
-Three.js + TypeScript + Vite ile yapılıyor, Vercel'de yayınlanıyor.
+A comic-book open-city action game that runs in the browser: swing, wall-run and fight across a procedurally generated night city.
 
-Şu an **Aşama 1B** bitti: hareket çekirdeği (koşu, halatla salınma, zip, dalış, duvarda koşma ve tırmanma),
-bileklikle iki mod (Kanca ve Titan), suç döngüsü ve dövüş, HUD, açılış ekranı, menü ve eğitim hazır.
-Proje belgesi: [BRIEF.md](BRIEF.md) · Plan: [PLAN.md](PLAN.md) · Oturum notları: [NOTLAR.md](NOTLAR.md) ·
-Sanat yönetimi: [docs/art-direction.md](docs/art-direction.md)
+**Play:** <https://sixoctober.vercel.app/> · Status: in development (prototype) · Desktop Chrome/Edge, keyboard + mouse.
 
-## Yerelde çalıştırma
+![Swinging through the city](docs/screenshots/swing.gif)
 
-Node.js 22.12 veya üstü gerekir.
+| | |
+|---|---|
+| ![Title screen](docs/screenshots/01-title.jpg) | ![Rope swinging](docs/screenshots/02-swing.jpg) |
+| ![Perched on a rooftop ledge](docs/screenshots/03-perch.jpg) | ![Street fight](docs/screenshots/04-fight.jpg) |
+
+![Crime stopped](docs/screenshots/05-crime-stopped.jpg)
+
+## Features
+
+- Physics-based rope swinging with automatic anchor selection, plus zip and launch-to-ledge
+- Wall running and climbing; dive and ground pound
+- Two switchable modes, Grapple and Titan, also mid-air
+- Crime-and-combat loop: punches, kicks, combos, counters and rope pulls
+- Comic-book HUD and effects
+- Procedurally generated city (`?seed=123` builds another one)
+
+## Controls
+
+| Key | Action |
+|---|---|
+| W A S D | Move (relative to the camera) |
+| Mouse | Look around · Wheel: camera near / mid / far |
+| Shift | Sprint · hold in the air to swing |
+| Space | Jump (hold: higher) · in the air: zip |
+| E | Launch onto the ledge under the crosshair · Grapple, on an enemy: pull them in |
+| C | Dive (in the air) · Titan: ground pound |
+| Tab · 1 · 2 | Switch Grapple / Titan |
+| Titan: Space | Hold, then let go: super jump |
+| Left / right click | Punch / kick (3 in a row: combo with a finisher) |
+| Q | Counter when an enemy shows **!!** |
+| R | Back to the last safe spot |
+| T | Slow motion |
+| H | Show / hide the controls card |
+| F1 | Tuning panel |
+| Esc | Pause |
+
+## Tech
+
+TypeScript, Three.js, postprocessing, Vite, Vitest, Vercel.
+
+## How it's built
+
+Designed and directed by Emirhan Efe Yaşar; implemented with AI coding agents (Claude Code, Codex) through a staged roadmap, with playtest feedback after each stage.
+The repository has 120 automated tests (Vitest) covering movement, rope and grapple, camera, combat, mode switching, the city generator and settings.
+
+## Run locally
+
+Node.js 22.12 or newer.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Terminalde çıkan adresi (genelde http://localhost:5173) Chrome ya da Edge'de aç.
+Other scripts: `npm run build`, `npm run preview`, `npm run test`, `npm run typecheck`.
 
-| Komut | Ne yapar |
-|---|---|
-| `npm run dev` | Geliştirme sunucusu; kod değişince sayfa yenilenir |
-| `npm run build` | Tip kontrolü + üretim derlemesi (`dist/`) |
-| `npm run preview` | Derlenmiş sürümü yerelde açar |
-| `npm run test` | Testleri çalıştırır (Vitest) |
-| `npm run typecheck` | TypeScript tip kontrolü |
+Original characters, city and art; no third-party characters or assets.
 
-## Kontroller
+## Project documents (Turkish)
 
-Oyun açılış ekranıyla başlar: **PLAY** (ilk seferde kısa eğitimle), **TUTORIAL**, **CONTROLS**, **SETTINGS**.
-Oyunda **H** kontrol kartını açar, **Esc** duraklatma menüsünü açar.
-
-- **Fare**: etrafa bak. **Tekerlek**: kamera yakın / orta / uzak.
-- **WASD**: hareket (kameraya göre).
-- **Shift** (basılı tut): yerde sprint, havada halatla salınma, duvarda koşmaya ya da tırmanmaya devam. Bırakınca fırlarsın; basılı tutarsan salınımlar kendiliğinden zincirlenir.
-- **Space**: zıplama (uzun basınca daha yüksek), havada nişangâhtaki noktaya zip, duvardan ve kenardan sıçrama.
-- **E**: nişangâhın altında parlayan çatı kenarına fırla. Dövüşte (Kanca) düşmanı kendine çek.
-- **C**: dalış (havada). Titan'da yere vuruş.
-- **Tab** ya da **1 / 2**: Kanca / Titan (havada da olur).
-- **Titan**: Space'i basılı tutup bırak: süper zıplama. Havada C: şok dalgalı yere vuruş.
-- **Sol tık** yumruk, **sağ tık** tekme (üst üste 3 vuruş kombo). Düşmanın üstünde **!!** görünce **Q**: karşı saldırı.
-- **R**: son güvenli noktaya dön. **T**: ağır çekim.
-- **F1**: ayar paneli. Değerleri oynarken değiştirebilirsin; "Copy values" o anki değerleri JSON olarak kopyalar.
-
-Adres çubuğu seçenekleri: `?seed=123` başka bir şehir üretir, `?quality=low|medium|high` kaliteyi sabitler.
-
-## Oynanış duman testi
-
-Başsız Chromium'da gerçek tuş ve fare girdisiyle betikli bir tur oynatır (açılış ekranı, eğitimin bir kısmı, salınma,
-bak ve fırla, havada Titan'a geçiş ve yere vuruş, suça gidiş, dövüş), değerleri kontrol eder ve
-`docs/previews/asama-1b/` altına ekran görüntüsü kaydeder. Yazılım render'ında yaklaşık 10 dakika sürer.
-
-```bash
-npm run build && npx vite preview --port 4173 &
-npm i --no-save playwright-core
-node tools/smoke/stage1b.mjs
-```
-
-Aşama 1A'nın hareket rotası da duruyor: `node tools/smoke/stage1a.mjs` (aynı hazırlık; `docs/previews/asama-1a/` altındaki görüntülerin üzerine yazar).
-
-## 3D test figürü (Blender)
-
-```bash
-blender -b --factory-startup -P tools/blender/test_figure.py
-```
-
-`public/assets/test/test_figure.glb` ve `docs/previews/test_figure.png` dosyalarını üretir.
-Ubuntu'da önce `apt-get install -y blender python3-numpy` gerekir.
+[BRIEF.md](BRIEF.md) (game brief) · [PLAN.md](PLAN.md) (roadmap) · [NOTLAR.md](NOTLAR.md) (session notes) · [docs/art-direction.md](docs/art-direction.md) (art direction).
+Headless smoke tests and the Blender test figure are described in [AGENTS.md](AGENTS.md).
